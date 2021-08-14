@@ -7,7 +7,6 @@ void main() {
     initialRoute: '/home',
     routes: {
       '/home': (context) => Home(),
-      //'/location': (context) => ChooseLocation(),
     },
     theme: ThemeData(
       brightness: Brightness.dark,
