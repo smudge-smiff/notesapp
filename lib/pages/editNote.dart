@@ -1,13 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:notesapp/services/note.dart';
+import 'package:notesapp/model/note.dart';
+import 'package:notesapp/services/NotesDatabase.dart';
+import 'package:notesapp/pages/home.dart';
 
-class EditNote extends StatelessWidget {
+class EditNote extends StatefulWidget {
   late Note note;
 
-  EditNote({Key? key, required this.note}) : super(key: key);
+  EditNote({Key? key, required this.note, newNote}) : super(key: key);
+
+  @override
+  _EditNoteState createState() => _EditNoteState(note);
+}
+
+class _EditNoteState extends State<EditNote> {
+  late Note noteRead;
+  _EditNoteState(this.noteRead);
+
+  bool newNote = true;
+
+  final titleController = TextEditingController();
+  final contentController = TextEditingController();
+
+  @override
+  void initState(){
+    titleController.text = noteRead.title;
+    contentController.text = noteRead.content;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
@@ -25,7 +48,7 @@ class EditNote extends StatelessWidget {
             Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: IconButton(
-                  onPressed: ()=> saveNote(), //Do something
+                  onPressed: ()=> saveNote(noteRead, titleController.text, contentController.text), //Do something
                   icon: Icon(
                     Icons.save,
                     size: 18,
@@ -46,7 +69,8 @@ class EditNote extends StatelessWidget {
                 keyboardType: TextInputType.name,
                 maxLines: 1,
                 autofocus: false,
-                initialValue: note.title,
+                //initialValue: note.title,
+                controller: titleController,
               ),
 
               TextFormField(
@@ -57,7 +81,8 @@ class EditNote extends StatelessWidget {
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 autofocus: false,
-                initialValue: note.content,
+                //initialValue: note.content,
+                controller: contentController,
               ),
             ],
           ),
@@ -66,7 +91,15 @@ class EditNote extends StatelessWidget {
     );
   }
 
-  void saveNote(){
+  void saveNote(Note note, String title, String content) async {
+    Note newNote = Note(title: title, content: content);
+    await NotesDatabase.instance.create(newNote);
+
+    var route = new MaterialPageRoute(
+      builder: (BuildContext context) =>
+          new Home(),
+    );
 
   }
 }
+

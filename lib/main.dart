@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:notesapp/services/NotesDatabase.dart';
 import 'pages/home.dart';
 
-void main() {
+
+void main() async{
+  print('start');
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(MaterialApp(
     title: 'Notes App',
     initialRoute: '/home',
