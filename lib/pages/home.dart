@@ -27,6 +27,7 @@ class _HomeState extends State<Home> {
     setState(() => isLoading = false);
   }
 
+
   @override
   Widget build(BuildContext context) {
     //loadNotes();
@@ -90,10 +91,7 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                 IconButton(
-                  onPressed: () {
-                    int? id = notes[index].id;
-                    deleteNote(id!);
-                  },
+                  onPressed: () => deleteNote(notes[index].id!),
                   icon: Icon(
                     Icons.delete,
                     size: 18,
@@ -107,15 +105,18 @@ class _HomeState extends State<Home> {
     },
   );
   
-  void navigateEditPage(Note note) {
+  void navigateEditPage(Note note) async{
     var route = new MaterialPageRoute(
       builder: (BuildContext context) =>
       new EditNote(note: note),
     );
-    Navigator.of(context).push(route);
+    dynamic res = await Navigator.of(context).push(route);
+    loadNotes();
+
   }
-  void deleteNote(int id){
-    NotesDatabase.instance.delete(id);
+  void deleteNote(int id) async {
+    await NotesDatabase.instance.delete(id);
+    loadNotes();
   }
 }
 

@@ -4,6 +4,7 @@ import 'package:notesapp/services/NotesDatabase.dart';
 import 'package:notesapp/pages/home.dart';
 
 class EditNote extends StatefulWidget {
+
   late Note note;
 
   EditNote({Key? key, required this.note, newNote}) : super(key: key);
@@ -92,14 +93,16 @@ class _EditNoteState extends State<EditNote> {
   }
 
   void saveNote(Note note, String title, String content) async {
-    Note newNote = Note(title: title, content: content);
-    await NotesDatabase.instance.create(newNote);
-
-    var route = new MaterialPageRoute(
-      builder: (BuildContext context) =>
-          new Home(),
-    );
-
+    if (note.id != null) {
+      Note newNote = Note(id: note.id, title: title, content: content);
+      print('id not null');
+      await NotesDatabase.instance.update(newNote);
+    } else {
+      Note newNote = Note(title: title, content: content);
+      print('id null');
+      await NotesDatabase.instance.create(newNote);
+    }
+    Navigator.pop(context);
   }
 }
 
